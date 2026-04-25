@@ -24,6 +24,7 @@ mirror-mark-eligible:
 
 variables:
   GIT_LFS: "true"
+  OSEC_CHECKMARX_ENABLED: 'false'
   OSEC_SONARQUBE_ENABLED: 'true'
   OSEC_SONARQUBE_LINUX_BASE: u22
 
