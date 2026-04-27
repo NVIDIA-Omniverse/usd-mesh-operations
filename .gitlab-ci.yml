@@ -8,6 +8,16 @@ include:
     file: 'modules/include.yml'
     ref: v2_latest
 
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.1.1
+    inputs:
+      enable: true
+      mr_run_when: always
+      rules_id: ov.repository.external
+      exclude_paths: ".gitlab-ci.yml .git/** README.md LICENSE"
+      skip_rules: "osecpac_gitcommitsquash osecpac_requiredgitfile"
+      extends_head:
+        - .omni_nvks_micro_runner:tags
+
   - project: 'omniverse/devplat/gitlab/templates/common/github-mirror-control'
     file: 'templates/candidate-pipeline.yml'
     ref: v1_latest
