@@ -13,7 +13,8 @@ include:
       enable: true
       mr_run_when: always
       rules_id: ov.repository.external
-      exclude_paths: ".gitlab-ci.yml .git/** README.md LICENSE"
+      # Do not exclude LICENSE — osecpac needs it for license policy (e.g. osecpac_license_missing).
+      exclude_paths: ".gitlab-ci.yml .git/** README.md"
       skip_rules: "osecpac_gitcommitsquash osecpac_requiredgitfile"
       extends_head:
         - .omni_nvks_micro_runner:tags
