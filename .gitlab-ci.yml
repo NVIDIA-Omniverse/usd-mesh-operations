@@ -51,4 +51,4 @@ workflow:
 # Vendored prebuilts and headers only; no project build. Skip third-party tree for analysis.
 osec:sonarqube:
   variables:
-    SONAR_EXCLUSIONS: "vendor/**"
+    SONAR_EXCLUSIONS: "vendor/**/lib/**"
