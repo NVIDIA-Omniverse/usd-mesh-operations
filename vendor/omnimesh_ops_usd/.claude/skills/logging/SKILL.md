@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
+
 ---
 name: logging
 description: Configure omnimesh_ops_usd logging output streams, verbosity levels, and ANSI coloring.

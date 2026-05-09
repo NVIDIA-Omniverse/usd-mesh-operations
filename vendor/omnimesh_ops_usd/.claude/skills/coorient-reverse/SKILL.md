@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
+
 ---
 name: coorient-reverse
 description: Coorient mesh faces for consistent winding, or reverse face winding order with optional normal flipping.

@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
+
 ---
 name: usd-io
 description: Read meshes from and write meshes to OpenUSD UsdGeomMesh prims using the omo::usd layer.
