@@ -27,11 +27,11 @@ include:
 # Set per job so it is not injected into every pipeline job (see templates/candidate-pipeline.yml).
 mirror-sync:
   variables:
-    MIRROR_REPO_ID: "omniverse-scene-optimizer-dependencies"
+    MIRROR_REPO_ID: "usd-mesh-operations"
 
 mirror-mark-eligible:
   variables:
-    MIRROR_REPO_ID: "omniverse-scene-optimizer-dependencies"
+    MIRROR_REPO_ID: "usd-mesh-operations"
 
 variables:
   GIT_LFS: "true"
