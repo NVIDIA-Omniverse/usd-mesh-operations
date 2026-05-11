@@ -8,7 +8,7 @@ include:
     file: 'modules/include.yml'
     ref: v2_latest
 
-  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.1.1
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.3.1
     inputs:
       enable: true
       mr_run_when: always
