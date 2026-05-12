@@ -23,6 +23,11 @@ include:
     file: 'templates/candidate-pipeline.yml'
     ref: v1_latest
 
+  - project: 'omniverse/sectools/vault'
+    ref: v1_latest
+    file:
+      - 'templates/v3/windows/codesign.gitlab-ci.yml'
+
 # github-mirror-control candidate-pipeline jobs (mirror-sync, mirror-mark-eligible) require MIRROR_REPO_ID.
 # Set per job so it is not injected into every pipeline job (see templates/candidate-pipeline.yml).
 mirror-sync:
@@ -52,3 +57,79 @@ workflow:
 osec:sonarqube:
   variables:
     SONAR_EXCLUSIONS: "vendor/**/lib/**"
+
+# One-shot job: sign vendored Windows DLLs in-place and push a commit.
+# Trigger manually from the pipeline UI. Remove this job once the signed
+# commit has landed.
+#
+# Prerequisites:
+#   - The codesign Vault template (included above) injects signing credentials.
+#   - packman must be bootstrapped so we can fetch repo_codesign.
+#   - CI_JOB_TOKEN must have push access to the repo (Settings > CI/CD >
+#     Token Permissions, or use a project deploy token instead).
+sign_vendor_dlls:
+  extends:
+    - .omni_devplat_windows_compute
+    - .osec:vault:v3:prod_token_job
+  stage: .post
+  when: manual
+  interruptible: false
+  timeout: 30 minutes
+  variables:
+    GIT_LFS: "true"
+    GIT_STRATEGY: clone
+    GIT_DEPTH: 0
+  before_script:
+    - !reference [.osec:vault:v3:windows:powershell, codesign:perform_vault_requests]
+  script:
+    - |
+      # --- 1. Bootstrap packman and fetch repo_codesign -----------------------
+      & cmd /c "tools\packman\bootstrap\configure.bat"
+      if ($LASTEXITCODE -ne 0) { Write-Error "packman bootstrap failed"; exit 1 }
+
+      & cmd /c "tools\packman\packman.cmd" install repo_codesign 7.4.5 -l _repo\deps\repo_codesign
+      if ($LASTEXITCODE -ne 0) { Write-Error "Failed to fetch repo_codesign"; exit 1 }
+
+      $codesignBat = "_repo\deps\repo_codesign\codesign.bat"
+      if (-not (Test-Path $codesignBat)) {
+        Write-Error "repo_codesign not found at $codesignBat"; exit 1
+      }
+
+      # --- 2. Sign every DLL under vendor/ -----------------------------------
+      $dlls = Get-ChildItem -Recurse -Filter *.dll -Path vendor\
+      if ($dlls.Count -eq 0) { Write-Error "No DLLs found under vendor/"; exit 1 }
+
+      foreach ($dll in $dlls) {
+        Write-Host "`nChecking: $($dll.FullName)"
+        $sig = Get-AuthenticodeSignature $dll.FullName
+        if ($sig.Status -eq 'Valid') {
+          Write-Host "  Already signed — skipping."
+          continue
+        }
+
+        Write-Host "  Signing…"
+        & cmd /c "$codesignBat" --file $dll.FullName
+        if ($LASTEXITCODE -ne 0) { Write-Error "Failed to sign $($dll.FullName)"; exit 1 }
+
+        $sig = Get-AuthenticodeSignature $dll.FullName
+        Write-Host "  Post-sign status: $($sig.Status)"
+        if ($sig.Status -ne 'Valid') { Write-Error "Signature verification failed for $($dll.FullName)"; exit 1 }
+      }
+
+      # --- 3. Commit and push signed binaries ---------------------------------
+      git config user.name "CI Bot"
+      git config user.email "ci-bot@nvidia.com"
+      git add vendor/
+      git status
+
+      $changes = git diff --cached --name-only
+      if ($changes) {
+        git commit -m "Sign vendored Windows DLLs"
+        git push "https://gitlab-ci-token:${env:CI_JOB_TOKEN}@${env:CI_SERVER_HOST}/${env:CI_PROJECT_PATH}.git" "HEAD:${env:CI_COMMIT_REF_NAME}"
+        Write-Host "`nSigned DLLs committed and pushed."
+      } else {
+        Write-Host "`nAll DLLs already signed — nothing to commit."
+      }
+  rules:
+    - if: $CI_COMMIT_REF_PROTECTED == "true"
+      when: manual
