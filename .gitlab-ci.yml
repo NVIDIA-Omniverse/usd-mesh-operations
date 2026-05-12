@@ -126,11 +126,17 @@ sign_vendor_dlls:
       $changes = git diff --cached --name-only
       if ($changes) {
         git commit -m "Sign vendored Windows DLLs"
-        git push "https://gitlab-ci-token:${env:CI_JOB_TOKEN}@${env:CI_SERVER_HOST}/${env:CI_PROJECT_PATH}.git" "HEAD:${env:CI_COMMIT_REF_NAME}"
-        Write-Host "`nSigned DLLs committed and pushed."
+        git push "https://gitlab-ci-token:${env:CI_JOB_TOKEN}@${env:CI_SERVER_HOST}/${env:CI_PROJECT_PATH}.git" "HEAD:${env:CI_COMMIT_REF_NAME}" 2>&1
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "`nWARNING: git push failed — download signed DLLs from job artifacts instead."
+        } else {
+          Write-Host "`nSigned DLLs committed and pushed."
+        }
       } else {
         Write-Host "`nAll DLLs already signed — nothing to commit."
       }
+      # Always exit 0 so artifacts are uploaded
+      exit 0
   artifacts:
     paths:
       - vendor/**/*.dll
