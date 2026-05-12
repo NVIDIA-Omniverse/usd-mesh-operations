@@ -73,6 +73,7 @@ sign_vendor_dlls:
     - .osec:vault:v3:prod_token_job
   stage: .post
   when: manual
+  needs: []
   interruptible: false
   timeout: 30 minutes
   variables:
