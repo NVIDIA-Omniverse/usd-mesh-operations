@@ -131,6 +131,10 @@ sign_vendor_dlls:
       } else {
         Write-Host "`nAll DLLs already signed — nothing to commit."
       }
+  artifacts:
+    paths:
+      - vendor/**/*.dll
+    expire_in: 7 days
   rules:
     - if: $CI_COMMIT_REF_PROTECTED == "true"
       when: manual
