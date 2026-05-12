@@ -1,9 +1,0 @@
-<!-- CloudFront-only: no URM/Artifactory remotes (reduces exposure in OSS / external audits).
-     NVIDIA-internal workflows that need Artifactory can use a separate packman config copy if required. -->
-<config remotes="cloudfront">
-    <remote2 name="cloudfront">
-        <transport actions="download" protocol="https" packageLocation="d4i3qtqj3r0z5.cloudfront.net/${name}@${version}" />
-        <transport actions="upload" protocol="s3" packageLocation="packages-for-cloudfront" />
-        <transport actions="list" protocol="https" packageLocation="omnipackages.nvidia.com/api/v1/list/cloudfront" />
-    </remote2>
-</config>
