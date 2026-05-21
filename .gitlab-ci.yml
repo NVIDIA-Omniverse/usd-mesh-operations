@@ -1,12 +1,23 @@
 include:
-  # Brings in the `osec:sonarqube` job (and related compliance jobs).
-  - project: "omniverse/devplat/gitlab/templates/common/compliance"
-    file: "modules/omniverse-repo-compliance.gitlab-ci.yml"
-    ref: v1_latest
-
   - project: 'omniverse/devplat/gitlab/templates/runners'
     file: 'modules/include.yml'
     ref: v2_latest
+
+  # - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/sonarqube/sonarqube_repository@v0.3.1
+  #   inputs:
+  #     job_name: sonarqube:repository
+  #     sonarqube_project_key: SimTech_Omniverse_Omniverse_omniverse-scene-optimizer-dependencies
+  #     # Vendored prebuilts and headers only; no project build. Skip third-party tree for analysis.
+  #     sonar_exclusions: "vendor/**/lib/**"
+  #     mr_run_when: always
+  #     extends_tail:
+  #       - .omni_nvks_runner-privileged:tags
+
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/pulse-trufflehog/pulse-trufflehog_repository@v0.3.1
+    inputs:
+      mr_run_when: always
+      extends_tail:
+        - .omni_nvks_runner-privileged:tags
 
   - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.3.1
     inputs:
@@ -35,9 +46,6 @@ mirror-mark-eligible:
 
 variables:
   GIT_LFS: "true"
-  OSEC_CHECKMARX_ENABLED: 'false'
-  OSEC_SONARQUBE_ENABLED: 'true'
-  OSEC_SONARQUBE_LINUX_BASE: u22
 
 default:
   interruptible: true
@@ -48,7 +56,20 @@ workflow:
     - if: $CI_COMMIT_REF_PROTECTED == "true"
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
-# Vendored prebuilts and headers only; no project build. Skip third-party tree for analysis.
-osec:sonarqube:
-  variables:
-    SONAR_EXCLUSIONS: "vendor/**/lib/**"
+# sonarqube:repository:
+#   before_script:
+#     - |
+#       tmp=$(mktemp)
+#       while IFS= read -r h; do
+#         printf '  {"directory":"%s","arguments":["g++","-c","%s/%s"],"file":"%s/%s"},\n' \
+#           "$CI_PROJECT_DIR" "$CI_PROJECT_DIR" "$h" "$CI_PROJECT_DIR" "$h"
+#       done < <(find . -name '*.h' | sed 's|^\./||') > "$tmp"
+#       count=$(wc -l < "$tmp")
+#       { echo '['; sed '$ s/,$//' "$tmp"; echo ']'; } > compile_commands.json
+#       rm "$tmp"
+#       echo "compile_commands.json: $count entries"
+#   variables:
+#     SONAR_CFAMILY_COMPILE_COMMANDS: compile_commands.json
+#   artifacts:
+#     expire_in: 1 day
+#     untracked: true

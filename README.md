@@ -1,6 +1,6 @@
 # USD Mesh Operations — Vendored Dependencies
 
-Prebuilt C++ libraries and headers used by [Scene Optimizer Core](https://github.com/NVIDIA-Omniverse/scene-optimizer-core) and related NVIDIA USD tooling. This repository pins known-good binary and header layouts so consuming projects can build without pulling dependencies from multiple sources at configure time.
+Prebuilt C++ libraries and headers consumed by [Omniverse Scene Optimizer](https://docs.omniverse.nvidia.com/extensions/latest/ext_scene-optimizer.html) (`omni.scene.optimizer.core` and related extensions) and other NVIDIA USD tooling. This repository pins known-good binary and header layouts so consuming projects can build without pulling dependencies from multiple sources at configure time.
 
 This project is currently not accepting contributions.
 
@@ -8,8 +8,8 @@ This project is currently not accepting contributions.
 
 | Topic | Where |
 | --- | --- |
-| **Scene Optimizer Core** | [GitHub](https://github.com/NVIDIA-Omniverse/scene-optimizer-core) |
-| **Documentation** | [User manual](https://docs.omniverse.nvidia.com/extensions/latest/ext_scene-optimizer/user-manual.html) |
+| **Repository** | [GitHub — `usd-mesh-operations`](https://github.com/NVIDIA-Omniverse/usd-mesh-operations) |
+| **Related product docs** | [Scene Optimizer extension](https://docs.omniverse.nvidia.com/extensions/latest/ext_scene-optimizer.html) · [User manual](https://docs.omniverse.nvidia.com/scene-optimizer/latest/user-manual.html) |
 | **Security** | [SECURITY.md](SECURITY.md) |
 | **Governance** | [Code of Conduct](CODE_OF_CONDUCT.md) |
 
