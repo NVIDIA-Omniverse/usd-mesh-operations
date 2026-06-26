@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2020-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2020-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -48,38 +48,38 @@ public:
 
     // TODO: consider adding a select that operates on an attribute + previous selection
 
-    OMO_EXPORT
+    OMO_EXPORT //
     ~Select();
 
     /// @brief Executes a Select operation with the provided settings.
     /// @param min The minimum value to match
     /// @param max The maximum value to match
-    /// @param minInclusive If true, the minimum value is inclusive, otherwise it is exclusive
-    /// @param maxInclusive If true, the maximum value is inclusive, otherwise it is exclusive
+    /// @param min_inclusive If true, the minimum value is inclusive, otherwise it is exclusive
+    /// @param max_inclusive If true, the maximum value is inclusive, otherwise it is exclusive
     /// @return A subset specifying which indices in the attribute data match the given criteria
-    OMO_EXPORT
+    OMO_EXPORT //
     Subset<R>
-    operator()(float min, float max, bool minInclusive, bool maxInclusive);
+    operator()(float min, float max, bool min_inclusive, bool max_inclusive);
 
     /// @brief Executes a Select operation with the provided settings.
     /// @param min The minimum value to match
     /// @param max The maximum value to match
-    /// @param minInclusive If true, the minimum value is inclusive, otherwise it is exclusive
-    /// @param maxInclusive If true, the maximum value is inclusive, otherwise it is exclusive
+    /// @param min_inclusive If true, the minimum value is inclusive, otherwise it is exclusive
+    /// @param max_inclusive If true, the maximum value is inclusive, otherwise it is exclusive
     /// @return A subset specifying which indices in the attribute data match the given criteria
-    OMO_EXPORT
+    OMO_EXPORT //
     Subset<R>
-    operator()(double min, double max, bool minInclusive, bool maxInclusive);
+    operator()(double min, double max, bool min_inclusive, bool max_inclusive);
 
     /// @brief Executes a Select operation with the provided settings.
     /// @param min The minimum value to match
     /// @param max The maximum value to match
-    /// @param minInclusive If true, the minimum value is inclusive, otherwise it is exclusive
-    /// @param maxInclusive If true, the maximum value is inclusive, otherwise it is exclusive
+    /// @param min_inclusive If true, the minimum value is inclusive, otherwise it is exclusive
+    /// @param max_inclusive If true, the maximum value is inclusive, otherwise it is exclusive
     /// @return A subset specifying which indices in the attribute data match the given criteria
-    OMO_EXPORT
+    OMO_EXPORT //
     Subset<R>
-    operator()(int32_t min, int32_t max, bool minInclusive, bool maxInclusive);
+    operator()(int32_t min, int32_t max, bool min_inclusive, bool max_inclusive);
 
 private:
     class Impl;

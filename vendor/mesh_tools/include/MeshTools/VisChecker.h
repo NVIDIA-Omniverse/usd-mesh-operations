@@ -68,7 +68,7 @@ struct VisCheckerParams
     int verbosityLevel = 0;
 
     /**
-     * @brief Use TBB to parallelize hot phases of the CPU visibility checker.
+     * @brief Use multithreading to parallelize hot phases of the CPU visibility checker.
      * When false (default), behavior matches the original sequential implementation.
      * Debug line output (@ref createLines) forces a sequential path for vertex/triangle passes.
      */

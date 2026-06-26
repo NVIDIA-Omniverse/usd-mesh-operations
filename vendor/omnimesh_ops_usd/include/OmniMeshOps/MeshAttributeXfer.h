@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -13,10 +13,10 @@
 #include "Defines.h"
 #include "Mesh.h"
 
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
-#include <limits>
 
 namespace omo
 {
@@ -37,17 +37,17 @@ public:
     /// with data type DataType::Vector3fArray or DataType::Vector3dArray, then then they will be
     /// interpolated, transformed, and added to the dst_mesh.  Otherwise attributes with role
     /// Role::Normal will be ignored.
-    OMO_EXPORT explicit
-    MeshAttributeXfer(const Mesh<R>& src_mesh, bool transfer_normals = false);
+    OMO_EXPORT //
+    explicit MeshAttributeXfer(const Mesh<R>& src_mesh, bool transfer_normals = false);
 
     /// @brief Constructor
     /// @param src_mesh The source Mesh.  All attributes in the supplied transferred_attributes array
     /// will be transferred to a destination mesh with the () operator.
     /// @param transferred_attributes A vector of attribute names to transfer, e.g {"primvars:st"}.
-    OMO_EXPORT explicit
-    MeshAttributeXfer(const Mesh<R>& src_mesh, const std::vector<std::string>& transferred_attributes);
+    OMO_EXPORT //
+    explicit MeshAttributeXfer(const Mesh<R>& src_mesh, const std::vector<std::string>& transferred_attributes);
 
-    OMO_EXPORT
+    OMO_EXPORT //
     ~MeshAttributeXfer();
 
     /// @brief The main operation, attributes from src_mesh (set in the constructor)
@@ -64,16 +64,28 @@ public:
     /// attributes (assuming src_mesh has them).  This allows other tools' normal generation
     /// to be preserved.
     /// @return A copy of dst_mesh with attributes added (or replaced) from src_mesh.
-    OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     Mesh<R>
-    operator()(const Mesh<R>& dst_mesh, const std::array<double, 16>& transform =
-        std::array<double, 16>{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+    operator()(const Mesh<R>& dst_mesh,
+               const std::array<double, 16>& transform =
+                   std::array<double, 16>{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
     /// @cond PRIVATE
     // For internal use only:
     class Impl;
-    OMO_EXPORT Impl* operator->() const { return m_impl.get(); }
-    OMO_EXPORT Impl& operator*() const { return *m_impl; }
+    OMO_EXPORT //
+    Impl*
+    operator->() const
+    {
+        return m_impl.get();
+    }
+    OMO_EXPORT //
+    Impl&
+    operator*() const
+    {
+        return *m_impl;
+    }
     /// @endcond
 
 private:

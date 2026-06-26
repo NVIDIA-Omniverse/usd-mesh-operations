@@ -161,13 +161,12 @@ struct NavigationMeshParameters
      */
     float maximumAgentRadius = 1.0f;
 
-    /** @var minimumAgentHeight
-     * The minimum height of the agents that will navigate the mesh. This parameter determines
-     * where the navigation mesh is created. The navigation mesh is only created in regions where the clearance is
-     * greater than the minimum agent height. A clearance map is created which is used at runtime to determine whether
-     * an agent equal or larger than the minimum height can navigate the mesh.
+    /** @var minimumClearance
+     * The navigation mesh is only created in regions where the clearance is
+     * greater than the minimum clearance. A clearance map is created which is used at runtime to determine whether
+     * an agent equal or larger than the minimum clearance can navigate the mesh.
      */
-    float minimumAgentHeight = 0.5f;
+    float minimumClearance = 2.0f;
 
     /** @var maxStepHeight
      * The maximal height of an obstacle the agent can step over.
@@ -390,6 +389,41 @@ struct CurvesDescriptor
     const int* lengths = nullptr;
     int numCurves = 0;
     int areaNr = 1; ///< Area number for triangles inside/on the curve (SDF <= 0)
+};
+
+/**
+ * @brief Describes the baked state of a navigation mesh.
+ * This matches the payload stored by serialize() / deserialize().
+ */
+struct NavigationMeshDescriptor
+{
+    Quat rotation = Quat(Identity);
+    float samplingDistance = 0.0f;
+    float maximumAgentRadius = 0.0f;
+
+    std::vector<Vec3> vertices;
+    std::vector<int> triangleIds;
+    std::vector<float> triangleBorderDistances;
+    std::vector<float> triangleAreaBorderDistances;
+    std::vector<float> triangleClearances;
+    std::vector<int> firstTriangleOfArea;
+    std::vector<float> areaCosts;
+    std::vector<std::string> areaNames;
+
+    int vertexCount() const
+    {
+        return (int)vertices.size();
+    }
+
+    int triangleCount() const
+    {
+        return (int)triangleIds.size() / 3;
+    }
+
+    int areaCount() const
+    {
+        return (int)areaNames.size();
+    }
 };
 
 
@@ -626,6 +660,19 @@ public:
      * @return True if the navigation mesh was loaded successfully, false otherwise.
      */
     MESHTOOLS_EXPORT bool deserialize(const uint8_t* data, size_t size);
+
+    /**
+     * @brief Creates a navigation mesh from a descriptor.
+     * @param descriptor The baked navigation mesh state.
+     * @return True if the navigation mesh was created successfully, false otherwise.
+     */
+    MESHTOOLS_EXPORT bool createFromDescriptor(const NavigationMeshDescriptor& descriptor);
+
+    /**
+     * @brief Returns the baked navigation mesh state as a descriptor.
+     * @param descriptor The descriptor to fill with the navigation mesh state.
+     */
+    MESHTOOLS_EXPORT void getDescriptor(NavigationMeshDescriptor& descriptor) const;
 
     /**
              * @brief Computes the shortest path on the navigation mesh between two points.

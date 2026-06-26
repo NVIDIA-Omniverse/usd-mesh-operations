@@ -1,4 +1,4 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
 <!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 ---
@@ -15,31 +15,36 @@ Isotropic remeshing producing uniform triangle sizes.
 
 ```cpp
 #include <OmniMeshOps/Remesh.h>
-#include <OmniMeshOps/usd/Mesh.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ## CPU Path
 
 ```cpp
-omo::usd::HostMesh inputMesh(usdGeomMesh, {omo::Defect::CoincidentVertices | omo::Defect::DegenerateEdges | omo::Defect::DegenerateFaces});
-omo::HostRemesh remesh(inputMesh);
-omo::HostMesh result = remesh(gradation, maxError);
+using namespace omo;
+
+HostMesh inputMesh = importMesh(usdGeomMesh, { manifestDefects });
+HostRemesh remesh(inputMesh);                       // or HostRemesh(inputMesh, transferredAttachments)
+HostMesh result = remesh(gradation, maxError);
+
+exportUsdGeomMesh(result, stage, primPath);
 ```
 
 ## GPU Path
 
 ```cpp
-omo::ScopedCudaContext cudaCtx(omo::Verbose{false});
-omo::DeviceRemesh remesh(omo::DeviceMesh{inputMesh});
-omo::HostMesh result(remesh(gradation, maxError));
+ScopedCudaContext cudaCtx(Verbose{ false });
+DeviceRemesh remesh(DeviceMesh{ inputMesh }, transferredAttachments);
+HostMesh result(remesh(gradation, maxError));
 ```
 
 ## Parameters
 
-- `gradation` — controls triangle density variation (0 = uniform, higher = more variation)
-- `maxError` — maximum geometric error tolerance (0 to disable)
+- `gradation` — controls triangle density variation (lower = more uniform; example default `0.1`)
+- `maxError` — maximum geometric error tolerance (example default `0.1`; 0 to disable)
 
 ## Key Notes
 
-- Each call remeshes the *original* mesh, not a previous result
-- Constructor optionally accepts `transferred_attributes` for attribute transfer
+- Each call remeshes the *original* mesh, not a previous result.
+- The constructor optionally accepts a `transferredAttachments` (`std::vector<std::string>`) of attribute/subset names; omit to transfer everything.
+- Import with `{ manifestDefects }` so degenerate input does not derail remeshing.

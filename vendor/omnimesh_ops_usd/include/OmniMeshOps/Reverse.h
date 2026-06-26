@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -22,8 +22,8 @@ class MeshData;
 
 enum class ReverseOptions
 {
-    None,           ///< No special option, use default handling.
-    FlipNormals     ///< Flip normals in addition to reversing faces.
+    None,       ///< No special option, use default handling.
+    FlipNormals ///< Flip normals in addition to reversing faces.
 };
 
 /// @brief Reverse the faces of the given MeshData
@@ -31,12 +31,11 @@ enum class ReverseOptions
 /// @param options Optional behavior (e.g. FlipNormals)
 /// @return A new MeshData with faces reversed
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 MeshData<R>
 reverse(
     const MeshData<R>& mesh_data,
-    const ReverseOptions& options = ReverseOptions::None
-);
+    const ReverseOptions& options = ReverseOptions::None);
 
 /// @brief Reverse the faces of the given MeshData
 /// @param mesh_data The MeshData to reverse
@@ -44,12 +43,11 @@ reverse(
 /// @param options Optional behavior (e.g. FlipNormals)
 /// @return A new MeshData with faces reversed
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 MeshData<R>
 reverse(
     const MeshData<R>& mesh_data,
     const std::vector<std::string>& transferred_attachments,
-    const ReverseOptions& options = ReverseOptions::None
-);
+    const ReverseOptions& options = ReverseOptions::None);
 
 } // namespace omo

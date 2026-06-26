@@ -1,4 +1,4 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
 <!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 ---
@@ -15,36 +15,39 @@ Refine a mesh using Catmull-Clark or Loop subdivision.
 
 ```cpp
 #include <OmniMeshOps/Subdivide.h>
-#include <OmniMeshOps/usd/Mesh.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ## CPU Path
 
 ```cpp
-omo::usd::HostMesh inputMesh(usdGeomMesh);
-omo::HostSubdivide subdivide(inputMesh, omo::SubdivisionMethod::CatmullClark);
-omo::HostMesh result = subdivide(iterationCount);
+using namespace omo;
+
+HostMesh inputMesh = importMesh(usdGeomMesh);
+HostSubdivide subdivide(inputMesh, transferredAttachments, SubdivisionMethod::CatmullClark, /*linear=*/false);
+HostMesh result = subdivide(iterationCount);
+
+exportUsdGeomMesh(result, stage, primPath);
 ```
 
 ## GPU Path
 
 ```cpp
-omo::ScopedCudaContext cudaCtx(omo::Verbose{false});
-omo::DeviceSubdivide subdivide(omo::DeviceMesh{inputMesh}, omo::SubdivisionMethod::CatmullClark);
-omo::HostMesh result(subdivide(iterationCount));
+ScopedCudaContext cudaCtx(Verbose{ false });
+DeviceSubdivide subdivide(DeviceMesh{ inputMesh }, transferredAttachments, SubdivisionMethod::CatmullClark, false);
+HostMesh result(subdivide(iterationCount));
 ```
 
 ## Parameters
 
 - `method` — `SubdivisionMethod::CatmullClark` or `SubdivisionMethod::Loop`
-- `iterationCount` — number of subdivision passes (default 1)
-- `linear` — if true, new vertices are linear combinations only (default false)
-- Constructor accepts optional crease/spike arrays for sharp feature control
+- `iterationCount` — number of subdivision passes (`uint32_t`, default 1)
+- `linear` — if true, new vertices are linear combinations of feature boundaries (default false)
+- `transferredAttachments` — `std::vector<std::string>` of attribute/subset names to interpolate
 
 ## Key Notes
 
-- Loop subdivision triangulates the mesh first if necessary
-- Face count grows as 4^n per iteration
-- Pass `transferred_attachments` to control which attributes are interpolated
-- Crease/spike sharpness follows DeRose et al. 1998 conventions
-- Mesh attributes with `Role::Sharpness` are automatically used for creases (PerCorner) and spikes (PerVertex)
+- Loop subdivision triangulates the mesh first if necessary.
+- Face count grows ~4× per Catmull-Clark iteration.
+- Attributes carrying `Role::Sharpness` are used automatically as creases (`PerCorner`) and spikes (`PerVertex`); sharpness follows DeRose et al. 1998 conventions.
+- Omit `transferredAttachments` (use a constructor overload without it) to interpolate everything.

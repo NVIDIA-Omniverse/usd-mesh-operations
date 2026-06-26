@@ -30,7 +30,7 @@ struct ClashDetectorParameters
     bool useGpu = true;
 
     /** @var useParallelCpuClashDetection
-     * When useGpu is false, if true the CPU implementation uses multiple threads (TBB) for point-clash
+     * When useGpu is false, if true the CPU implementation uses multiple threads for point-clash
      * and face-intersection passes. If false, those passes run single-threaded (e.g. for reproducibility
      * or debugging). Ignored when useGpu is true.
      */
