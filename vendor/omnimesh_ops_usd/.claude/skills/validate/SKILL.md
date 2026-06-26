@@ -1,59 +1,82 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
 <!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 ---
 name: validate
-description: Run mesh topology and attribute validation checks (manifold, degenerate, normals, finite values).
+description: Check mesh topology defects (checkClean) and normals (unit-length, winding consistency) without modifying the mesh.
 allowed-tools: Read, Glob, Grep
 ---
 
 # Validate Mesh Data
 
-Run validation checks on mesh topology and attributes.
+Topology validation is the read-only counterpart of `cleanup()`: `checkClean()` reports which of the requested `Defect`s are present. Normals validation lives in `Normals.h`.
 
 ## Headers
 
 ```cpp
-#include <OmniMeshOps/ValidateMeshData.h>
-#include <OmniMeshOps/Normals.h>
-#include <OmniMeshOps/Attribute.h>
+#include <OmniMeshOps/Cleanup.h>   // cleanup() + checkClean()
+#include <OmniMeshOps/Normals.h>   // checkNormalsUnitLength / checkNormalsConsistentWithWinding
+#include <OmniMeshOps/UsdIO.h>     // importMeshData
 ```
 
-## Topology Checks
+## Topology: checkClean
+
+`checkClean(meshData, options)` reports every defect from `options.fixes` that is present. Its result is convertible to `bool` (true == clean) and carries a `presentDefects` set and a `message`.
 
 ```cpp
-omo::HostMeshData meshData(hostMesh);
+using namespace omo;
 
-auto manifoldResult = omo::checkManifold(meshData);
-auto coincidentResult = omo::checkNoMergeableCoincidentVertices(meshData, tolerance);
-auto edgeResult = omo::checkNoDegenerateEdges(meshData);
-auto faceResult = omo::checkNoDegenerateFaces(meshData);
-auto isolatedResult = omo::checkNoIsolatedVertices(meshData);
-auto duplicateResult = omo::checkNoDuplicateFaces(meshData);
+HostMeshData mesh_data = importMeshData(usd_mesh);
 
-if (!manifoldResult) {
-    std::string detail = manifoldResult.message;
+CleanupOptions options;
+options.fixes = allDefects;          // or manifestDefects, or a hand-built set
+options.vertexMergeTolerance = 0.0f; // L-infinity coincidence tolerance
+
+CleanupValidation result = checkClean(mesh_data, options);
+if (!result) {
+    // result.presentDefects : EnumSet<Defect> of offending defects
+    // result.message        : newline-joined, one line per reported defect
+    std::cout << result.message << "\n";
 }
 ```
 
-## Attribute Checks
+To actually repair, call `cleanup()` with the same options (returns a new `MeshData`):
 
 ```cpp
-auto finiteResult = omo::checkAttributeFinite(attribute);
-auto normalResult = omo::checkNormalsUnitLength(attribute, tolerance, omo::CheckNormalsOptions::Strict);
-auto windingResult = omo::checkNormalsConsistentWithWinding(meshData, attribute, omo::Orientation::RightHanded);
+HostMeshData cleaned = cleanup(mesh_data, options);
+```
+
+Both run on the GPU by wrapping the input in a `DeviceMeshData`:
+
+```cpp
+auto result  = checkClean(DeviceMeshData(mesh_data), options);
+auto cleaned = HostMeshData(cleanup(DeviceMeshData(mesh_data), options));
+```
+
+## Normals checks
+
+```cpp
+auto normals_attr = mesh.getAttribute(Role::Normal);   // mesh is Host/DeviceMeshData
+if (normals_attr)
+{
+    auto [unit_ok, unit_msg] =
+        checkNormalsUnitLength(normals_attr, /*tolerance=*/1e-4,
+                               CheckNormalsOptions::Strict);
+
+    auto [wind_ok, wind_msg] =
+        checkNormalsConsistentWithWinding(mesh, normals_attr, Orientation::RightHanded);
+}
 ```
 
 ## Parameters
 
-- `checkNoMergeableCoincidentVertices` tolerance defaults to 0.0 (exact match)
-- `merge_neighbors` and `merge_boundaries` default to `{true}`
-- `checkNormalsUnitLength` tolerance defaults to 1e-4
-- `CheckNormalsOptions::AllowZeroLength` — ignore precisely zero vectors
-- `Orientation::RightHanded` or `LeftHanded` for winding check
+- `CleanupOptions::fixes` — which `Defect`s to check/fix (default: `noDefects`). See the AGENTS.md "Cleanup & Defects" section for the full enum and named sets (`manifestDefects`, `allDefects`, `coincidentVertexDefects`, …).
+- `CleanupOptions::vertexMergeTolerance` — coincidence tolerance for the coincident-vertex defects (0 = exact).
+- `checkNormalsUnitLength` tolerance defaults to `1e-4`; `CheckNormalsOptions::AllowZeroLength` ignores exactly-zero vectors, `Strict` does not.
+- `checkNormalsConsistentWithWinding` takes `Orientation::RightHanded` or `LeftHanded` (map from `UsdGeomTokens->rightHanded` when reading from USD).
 
 ## Key Notes
 
-- All validation functions return `ValidationResult` which is implicitly convertible to `bool`
-- `ValidationResult::message` provides detailed information about failures
-- These functions work with both `Host` and `Device` residency
+- `checkClean` only reports defects that *persist* across the canonical cleanup pipeline; a defect whose disruption a later fixer undoes is not reported.
+- `CleanupValidation` and `Validation` are both implicitly convertible to `bool`; `.message` carries detail.
+- Topology checks operate on `MeshData`; normals checks operate on `MeshData` plus an `Attribute`. Both support `Host` and `Device` residency.

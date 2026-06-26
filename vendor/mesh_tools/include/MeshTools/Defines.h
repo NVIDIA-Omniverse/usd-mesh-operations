@@ -14,7 +14,11 @@
 #include <vector>
 
 #ifdef _MSC_VER
-#    define MESHTOOLS_EXPORT __declspec(dllexport)
+#    ifdef mesh_tools_lib_EXPORTS
+#        define MESHTOOLS_EXPORT __declspec(dllexport)
+#    else
+#        define MESHTOOLS_EXPORT __declspec(dllimport)
+#    endif
 #else
 #    define MESHTOOLS_EXPORT __attribute__((visibility("default")))
 #endif

@@ -1,4 +1,4 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
 <!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 ---
@@ -15,36 +15,40 @@ Select a subset of mesh elements based on attribute value ranges.
 
 ```cpp
 #include <OmniMeshOps/Select.h>
-#include <OmniMeshOps/usd/Mesh.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ## Select by Attribute Name
 
 ```cpp
-omo::usd::HostMesh mesh(usdGeomMesh);
-omo::HostSelect select(mesh, "primvars:myAttribute");
-omo::HostSubset subset = select(minValue, maxValue, minInclusive, maxInclusive);
+using namespace omo;
+
+HostMesh mesh = importMesh(usdGeomMesh);
+HostSelect select(mesh, "primvars:myAttribute");
+HostSubset subset = select(minValue, maxValue, minInclusive, maxInclusive);
 ```
 
 ## Select by Attribute Reference
 
 ```cpp
-omo::HostSelect select(mesh, attribute);
-omo::HostSubset subset = select(0.0f, 1.0f, true, true);
+auto attribute = mesh.getAttribute("primvars:myAttribute");
+HostSelect select(mesh, attribute);
+HostSubset subset = select(0.0f, 1.0f, true, true);
 ```
 
 ## Select Within Existing Subset
 
 ```cpp
-omo::HostSelect select(mesh, attribute, existingSubset);
-omo::HostSubset subset = select(min, max, minInclusive, maxInclusive);
+HostSelect select(mesh, attribute, existingSubset);
+HostSubset subset = select(min, max, minInclusive, maxInclusive);
 ```
 
 ## Overloads
 
-`operator()` accepts `float`, `double`, or `int32_t` range bounds. The subset binding matches the attribute binding.
+`operator()` accepts `float`, `double`, or `int32_t` range bounds: `operator()(min, max, min_inclusive, max_inclusive)`. The returned subset's binding matches the attribute binding.
 
 ## Key Notes
 
-- When using an existing subset to limit selection, the subset binding must match the attribute binding, otherwise it is ignored
-- Returns a `Subset` specifying which indices in the attribute data match the criteria
+- When limiting selection with an existing subset, the subset binding must match the attribute binding, otherwise it is ignored.
+- Returns a `Subset` specifying which indices in the attribute data match the criteria.
+- Available for both `Host` and `Device` residency (`HostSelect` / `DeviceSelect`).

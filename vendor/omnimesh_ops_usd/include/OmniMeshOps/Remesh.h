@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2020-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2020-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -40,10 +40,9 @@ public:
     /// @param transferred_attributes The list of attribute names to bring over from the source mesh to the remeshed
     /// mesh
     OMO_EXPORT
-    Remesh(const Mesh<R>& mesh,
-           const std::vector<std::string>& transferred_attributes);
+    Remesh(const Mesh<R>& mesh, const std::vector<std::string>& transferred_attributes);
 
-    OMO_EXPORT
+    OMO_EXPORT //
     ~Remesh();
 
     /// @brief Executes a remesh operation with the provided settings.
@@ -51,12 +50,12 @@ public:
     /// @param gradation The gradation to use, affects how many triangles are created.
     /// @param max_error Stop-condition, will stop remeshing when the max error is reached (0 to disable)
     /// @return The remeshed Mesh
-    OMO_EXPORT
+    OMO_EXPORT //
     Mesh<R>
-    operator()(double gradation,
-               double max_error) const;
+    operator()(double gradation, double max_error) const;
 
     class Impl;
+
 private:
     std::unique_ptr<Impl> m_impl;
 };

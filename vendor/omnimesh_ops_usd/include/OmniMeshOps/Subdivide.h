@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -47,11 +47,11 @@ public:
     /// @param method Which subdivision algorithm to use (see SubdivisionMethod).  Default is Catmull-Clark.
     /// @note This constructor considers *all* attributes subject to transfer.
     /// @param linear If true, new vertices are linear combination of associated source elements.  Default = false.
-    OMO_EXPORT explicit
-    Subdivide(const Mesh<R>& mesh,
-              SubdivisionMethod method = SubdivisionMethod::CatmullClark,
-              bool linear = false
-             );
+    OMO_EXPORT //
+    explicit Subdivide(
+        const Mesh<R>& mesh,
+        SubdivisionMethod method = SubdivisionMethod::CatmullClark,
+        bool linear = false);
 
     /// @brief Constructs a Subdivide object from a given Mesh and crease and spike descriptions.
     /// The crease and spike descriptions will override any found in the mesh via Role::Sharpness attributes.
@@ -68,15 +68,15 @@ public:
     /// @param method Which subdivision algorithm to use (see SubdivisionMethod).  Default is Catmull-Clark.
     /// @note This constructor considers *all* attributes subject to transfer.
     /// @param linear If true, new vertices are linear combination of associated source elements.  Default = false.
-    OMO_EXPORT explicit
-    Subdivide(const Mesh<R>& mesh,
-              const std::vector<uint32_t>& crease_sides,
-              const std::vector<sharpness_t>& crease_sharpnesses,
-              const std::vector<uint32_t>& spike_vertices,
-              const std::vector<sharpness_t>& spike_sharpnesses,
-              SubdivisionMethod method = SubdivisionMethod::CatmullClark,
-              bool linear = false
-             );
+    OMO_EXPORT //
+    explicit Subdivide(
+        const Mesh<R>& mesh,
+        const std::vector<uint32_t>& crease_sides,
+        const std::vector<sharpness_t>& crease_sharpnesses,
+        const std::vector<uint32_t>& spike_vertices,
+        const std::vector<sharpness_t>& spike_sharpnesses,
+        SubdivisionMethod method = SubdivisionMethod::CatmullClark,
+        bool linear = false);
 
     /// @brief Constructs a Subdivide from a given Mesh and a set of attributes to transfer.
     /// If the mesh contains an attribute with Role::Sharpness and any integer or floating-point DataType,
@@ -87,14 +87,14 @@ public:
     /// @param method Which subdivision algorithm to use (see SubdivisionMethod).  Default is Catmull-Clark.
     /// @param linear If true, new vertices are linear combination of associated source elements.  Default = false.
     OMO_EXPORT
-    Subdivide(const Mesh<R>& mesh,
-              const std::vector<std::string>& transferred_attachments,
-              SubdivisionMethod method = SubdivisionMethod::CatmullClark,
-              bool linear = false
-             );
+    Subdivide(
+        const Mesh<R>& mesh,
+        const std::vector<std::string>& transferred_attachments,
+        SubdivisionMethod method = SubdivisionMethod::CatmullClark,
+        bool linear = false);
 
-    /// @brief Constructs a Subdivide object from a given Mesh and crease and spike descriptions and a set of
-    //// attributes to transfer.
+    /// `@brief` Constructs a Subdivide object from a given Mesh and crease and spike descriptions and a set of
+    /// attributes to transfer.
     /// The crease and spike descriptions will override any found in the mesh via Role::Sharpness attributes.
     /// Empty crease and spike descriptions will there remove creases and spikes defined in mesh attributes.
     /// @param mesh The source Mesh.
@@ -110,32 +110,42 @@ public:
     /// @param method Which subdivision algorithm to use (see SubdivisionMethod).  Default is Catmull-Clark.
     /// @param linear If true, new vertices are linear combination of associated source elements.  Default = false.
     OMO_EXPORT
-    Subdivide(const Mesh<R>& mesh,
-              const std::vector<uint32_t>& crease_sides,
-              const std::vector<sharpness_t>& crease_sharpnesses,
-              const std::vector<uint32_t>& spike_vertices,
-              const std::vector<sharpness_t>& spike_sharpnesses,
-              const std::vector<std::string>& transferred_attachments,
-              SubdivisionMethod method = SubdivisionMethod::CatmullClark,
-              bool linear = false
-             );
+    Subdivide(
+        const Mesh<R>& mesh,
+        const std::vector<uint32_t>& crease_sides,
+        const std::vector<sharpness_t>& crease_sharpnesses,
+        const std::vector<uint32_t>& spike_vertices,
+        const std::vector<sharpness_t>& spike_sharpnesses,
+        const std::vector<std::string>& transferred_attachments,
+        SubdivisionMethod method = SubdivisionMethod::CatmullClark,
+        bool linear = false);
 
-    OMO_EXPORT
+    OMO_EXPORT //
     ~Subdivide();
 
     /// @brief Executes the subdivision operation. If no source mesh was given to begin with,
     /// the return value will be an empty Mesh.
     /// @param iteration_count The number of times to subdivide.  Default = 1.
     /// @return The subdivided Mesh.
-    OMO_EXPORT
+    OMO_EXPORT //
     Mesh<R>
-    operator() (uint32_t iteration_count = 1) const;
+    operator()(uint32_t iteration_count = 1) const;
 
     /// @cond PRIVATE
     // For internal use only:
     class Impl;
-    OMO_EXPORT Impl* operator->() const { return m_impl.get(); }
-    OMO_EXPORT Impl& operator*() const { return *m_impl; }
+
+    OMO_EXPORT //
+    Impl*
+    operator->() const
+    {
+        return m_impl.get();
+    }
+    OMO_EXPORT Impl&
+    operator*() const
+    {
+        return *m_impl;
+    }
     /// @endcond
 private:
     std::unique_ptr<Impl> m_impl;

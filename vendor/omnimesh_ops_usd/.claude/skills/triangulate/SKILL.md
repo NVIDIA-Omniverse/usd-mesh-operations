@@ -1,4 +1,4 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
 <!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 ---
@@ -15,30 +15,35 @@ Convert polygonal faces (quads, n-gons) to triangles.
 
 ```cpp
 #include <OmniMeshOps/Triangulate.h>
-#include <OmniMeshOps/usd/Mesh.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ## CPU Path
 
 ```cpp
-omo::usd::HostMesh inputMesh(usdGeomMesh);
-omo::HostTriangulate triangulate(inputMesh);
-omo::HostMesh result = triangulate();
+using namespace omo;
+
+HostMesh inputMesh = importMesh(usdGeomMesh);
+HostTriangulate triangulate(inputMesh);            // or HostTriangulate(inputMesh, transferredAttachments)
+HostMesh result = triangulate();
+
+exportUsdGeomMesh(result, stage, primPath);
 ```
 
 ## GPU Path
 
 ```cpp
-omo::ScopedCudaContext cudaCtx(omo::Verbose{false});
-omo::DeviceTriangulate triangulate(omo::DeviceMesh{inputMesh});
-omo::HostMesh result(triangulate());
+ScopedCudaContext cudaCtx(Verbose{ false });
+DeviceTriangulate triangulate(DeviceMesh{ inputMesh }, transferredAttachments);
+HostMesh result(triangulate());
 ```
 
 ## Parameters
 
-- Constructor optionally accepts `transferred_attributes` vector to control which attributes are transferred
+- The constructor optionally accepts `transferredAttachments` (`std::vector<std::string>`) to control which attributes/subsets are carried over.
 
 ## Key Notes
 
-- Returns an empty Mesh if no source mesh was provided
-- All attributes are transferred by default unless `transferred_attributes` is specified
+- `operator()` takes no arguments and returns the triangulated mesh.
+- All attributes/subsets are transferred by default unless `transferredAttachments` is specified.
+- Returns an empty mesh if no source mesh was provided.

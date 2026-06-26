@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -27,21 +27,21 @@ class Subset
 {
 public:
     /// Empty subset
-    OMO_EXPORT static
-    const Subset&
+    OMO_EXPORT //
+    static const Subset&
     Empty();
 
     /// Constructs an empty Subset
     OMO_EXPORT
     Subset();
 
-    OMO_EXPORT
+    OMO_EXPORT //
     ~Subset();
 
     /// @brief Constructs a Subset from a subset with opposite residency, by copying data.
     template <Residency S>
-    OMO_EXPORT explicit
-    Subset(const Subset<S>&);
+    OMO_EXPORT //
+    explicit Subset(const Subset<S>&);
 
     /// @brief Copy constructor
     OMO_EXPORT
@@ -52,33 +52,34 @@ public:
     Subset(Subset&&) noexcept;
 
     /// @brief Copy-assignment operator
-    OMO_EXPORT
+    OMO_EXPORT //
     Subset&
     operator=(const Subset&);
 
     /// @brief Move-assignment operator
-    OMO_EXPORT
+    OMO_EXPORT //
     Subset&
     operator=(Subset&&) noexcept;
 
     /// \param name The Subset name
     /// \param data The raw data pointer
-    /// \param dataCount The number of dataType items in data (note: not a total byte size)
+    /// \param data_count The number of dataType items in data (note: not a total byte size)
     /// \param binding The way that the Subset is bound to the mesh
-    /// \param familyName The name of the subset family
-    /// \param familyType The subset family type
+    /// \param family_name The name of the subset family
+    /// \param family_type The subset family type
     /// \param copy_buffer Pass true if the Subset should make a copy of the passed in data
     OMO_EXPORT
-    Subset(std::string_view name,
-           const uint32_t* data,
-           size_t dataCount,
-           Binding binding,
-           std::string_view familyName,
-           SubsetFamilyType familyType,
-           bool copy_buffer = true);
+    Subset( //
+        std::string_view name,
+        const uint32_t* data,
+        size_t data_count,
+        Binding binding,
+        std::string_view family_name,
+        SubsetFamilyType family_type,
+        bool copy_buffer = true);
 
     /// @return true if the Subset is empty, false otherwise
-    OMO_EXPORT
+    OMO_EXPORT //
     bool
     operator!() const;
 
@@ -87,37 +88,43 @@ public:
     operator bool() const;
 
     /// @return true if the two Subsets are considered equal
-    OMO_EXPORT
+    OMO_EXPORT //
     bool
     operator==(const Subset& rhs) const;
 
     /// @return Binding of the Subset
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     Binding
     binding() const;
 
     /// @return Family type of the Subset
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     SubsetFamilyType
     familyType() const;
 
     /// @return Family name that the Subset belongs to
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     std::string_view
     familyName() const;
 
     /// @return Raw pointer to the data of the Subset
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     const uint32_t*
     data() const;
 
     /// @return The number of entries in data (depends on the DataType used)
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     size_t
     size() const;
 
     /// @return The name of the Subset
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     std::string_view
     name() const;
 
@@ -127,15 +134,19 @@ public:
     explicit OMO_EXPORT
     Subset(const SubsetImpl<R>&);
 
-    OMO_EXPORT
+    OMO_EXPORT //
     SubsetImpl<R>&
     impl()
-    { return *m_impl; }
+    {
+        return *m_impl;
+    }
 
-    OMO_EXPORT
+    OMO_EXPORT //
     const SubsetImpl<R>&
     impl() const
-    { return *m_impl; }
+    {
+        return *m_impl;
+    }
 
     /// @endcond
 
@@ -144,7 +155,9 @@ private:
 };
 
 template <Residency R>
-OMO_EXPORT std::ostream& operator<<(std::ostream& os, const Subset<R>& a);
+OMO_EXPORT //
+std::ostream&
+operator<<(std::ostream& os, const Subset<R>& a);
 
 using HostSubset = Subset<Host>;
 using DeviceSubset = Subset<Device>;
