@@ -34,15 +34,52 @@ include:
     file: 'templates/candidate-pipeline.yml'
     ref: v1_latest
 
-# github-mirror-control candidate-pipeline jobs (mirror-sync, mirror-mark-eligible) require MIRROR_REPO_ID.
-# Set per job so it is not injected into every pipeline job (see templates/candidate-pipeline.yml).
+# Disable the stock candidate-pipeline jobs (no deps to sync for this prebuilts
+# repo); mirror-to-github below replaces them.
 mirror-sync:
-  variables:
-    MIRROR_REPO_ID: "usd-mesh-operations"
+  rules:
+    - when: never
 
 mirror-mark-eligible:
+  rules:
+    - when: never
+
+# Manual on-demand mirror. Click on a main pipeline to flag the current HEAD
+# eligible in github-mirror-control; the scheduled reconcile does the push.
+mirror-to-github:
+  extends:
+    - .mirrorctl-setup
+    - .runner-utility-linux-x86_64
+  stage: deploy
+  interruptible: false
   variables:
-    MIRROR_REPO_ID: "usd-mesh-operations"
+    GIT_DEPTH: 1
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_PROTECTED == "true"
+      when: manual
+      allow_failure: false
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+      allow_failure: false
+  script:
+    - |
+      cd /tmp/_mirrorctl
+      ./repo.sh ci mirrorctl -- mark-eligible \
+        --state-dir state \
+        --repo-id "usd-mesh-operations" \
+        --source-branch main \
+        --source-sha "${CI_COMMIT_SHA}" \
+        --build-status success \
+        --external-sync-status success
+      git add state/
+      git diff --cached --quiet || {
+        git config user.name "svcomnigitlabgithub"
+        git config user.email "svcomnigitlabgithub@nvidia.com"
+        git commit -m "mirror usd-mesh-operations main ${CI_COMMIT_SHA:0:12} to github (manual)"
+        git push "https://oauth2:${GITLAB_AUTH_TOKEN}@${CI_SERVER_HOST}/omniverse/devplat/gitlab/templates/common/github-mirror-control.git" HEAD:main
+      }
 
 variables:
   GIT_LFS: "true"
