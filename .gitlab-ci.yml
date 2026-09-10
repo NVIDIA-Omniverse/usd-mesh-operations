@@ -13,13 +13,13 @@ include:
   #     extends_tail:
   #       - .omni_nvks_runner-privileged:tags
 
-  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/pulse-trufflehog/pulse-trufflehog_repository@v0.8.0
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/pulse-trufflehog/pulse-trufflehog_repository@v0.15.0
     inputs:
       mr_run_when: always
       extends_tail:
         - .omni_nvks_runner-privileged:tags
 
-  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.3.1
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.6.4
     inputs:
       enable: true
       mr_run_when: always
