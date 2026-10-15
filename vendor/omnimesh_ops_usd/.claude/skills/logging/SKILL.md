@@ -1,11 +1,14 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
-<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
-
 ---
 name: logging
 description: Configure omnimesh_ops_usd logging output streams, verbosity levels, and ANSI coloring.
 allowed-tools: Read, Glob, Grep
+license: LicenseRef-NvidiaProprietary
+metadata:
+  version: "1.0.0"
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 # Configure Logging
 

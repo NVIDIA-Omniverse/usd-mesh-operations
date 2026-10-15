@@ -1,11 +1,14 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
-<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
-
 ---
 name: attribute-transfer
 description: Transfer and interpolate mesh attributes from a source mesh to a destination mesh.
 allowed-tools: Read, Glob, Grep
+license: LicenseRef-NvidiaProprietary
+metadata:
+  version: "1.0.0"
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 # Transfer Attributes Between Meshes
 
