@@ -49,7 +49,7 @@ mirror-mark-eligible:
 mirror-to-github:
   extends:
     - .mirrorctl-setup
-    - .runner-utility-linux-x86_64
+    - .ipp_lnx_x86_64_cpu_small
   stage: deploy
   interruptible: false
   variables:
