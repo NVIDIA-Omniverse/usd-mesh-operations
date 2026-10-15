@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-14
+
+- Fix YAML frontmatter discovery in all 16 OmniMesh skills by placing the SPDX comments after the frontmatter.
+- Add `license: LicenseRef-NvidiaProprietary`, matching the existing SPDX license, and `metadata.version: "1.0.0"` to each skill.
+
 ## 2026-06-25
 
 - Updated all four vendored packages to their latest published builds:
