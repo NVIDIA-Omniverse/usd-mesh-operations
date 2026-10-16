@@ -1,0 +1,10 @@
+{
+  "source_repo": "https://gitlab-master.nvidia.com/omniverse/scene-optimizer-dependencies.git",
+  "source_branch": "main",
+  "source_sha": "4f0ab5a101915539d252a6c10a4508a6fd9341c0",
+  "target_repo": "https://github.com/NVIDIA-dev/usd-mesh-operations.git",
+  "target_branch": "main",
+  "transform_type": "none",
+  "transform_version": "sha256:d938b6cd5755782b",
+  "published_at": "2026-10-16T13:34:30.068948+00:00"
+}
