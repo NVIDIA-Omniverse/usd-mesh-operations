@@ -1,11 +1,14 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
-<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
-
 ---
 name: gpu-acceleration
 description: Move mesh computation to CUDA GPU using ScopedCudaContext and Host/Device residency pattern.
 allowed-tools: Read, Glob, Grep
+license: LicenseRef-NvidiaProprietary
+metadata:
+  version: "1.0.0"
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 # GPU Acceleration Pattern
 

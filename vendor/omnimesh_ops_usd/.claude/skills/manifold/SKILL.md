@@ -1,38 +1,47 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
-<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
-
 ---
 name: manifold
 description: Create a manifold cutting of a non-manifold mesh.
 allowed-tools: Read, Glob, Grep
+license: LicenseRef-NvidiaProprietary
+metadata:
+  version: "1.0.0"
 ---
+
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
 
 # Make a Mesh Manifold
 
-Create a manifold cutting of a non-manifold mesh.
+Create a manifold cutting of a non-manifold mesh. `manifold()` is a free function operating on a full `Mesh`.
 
 ## Headers
 
 ```cpp
 #include <OmniMeshOps/Manifold.h>
-#include <OmniMeshOps/usd/Mesh.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ## Usage
 
 ```cpp
-omo::usd::HostMesh mesh(usdGeomMesh, {omo::Defect::None});
-omo::HostMesh manifoldMesh = omo::manifold(mesh);
+using namespace omo;
+
+HostMesh mesh = importMesh(usdGeomMesh);
+HostMesh manifoldMesh = manifold(mesh);
+
+exportUsdGeomMesh(manifoldMesh, stage, primPath);
 ```
 
 ## With Explicit Attribute Transfer
 
 ```cpp
-omo::HostMesh manifoldMesh = omo::manifold(mesh, {"primvars:st", "primvars:normals"});
+HostMesh manifoldMesh = manifold(mesh, { "primvars:st", "primvars:normals" });
 ```
 
 ## Key Notes
 
-- All attachments are transferred by default; pass `transferred_attachments` to filter
-- CPU-only is typically faster than GPU for this operation (host-device copy overhead exceeds the computation time)
-- Vertex count may increase as non-manifold vertices are split
+- Two overloads: `manifold(mesh)` transfers all attachments; `manifold(mesh, transferredAttachments)` transfers only the named attributes/subsets.
+- Operates on `Mesh` (not `MeshData`); works for both `Host` and `Device` residency.
+- CPU is typically faster than GPU here (host↔device copy overhead exceeds the compute time).
+- Vertex count may increase as non-manifold vertices are split.
+- Alternatively, request `Defect::Nonmanifold` via `cleanup()` / `CleanupOptions` to make a mesh manifold as part of a broader cleanup pass (see the `validate` skill).

@@ -1,8 +1,8 @@
-// SPDX-FileCopyrightText: Copyright (c) 2020-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2020-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
-// property and proprietary rights in and to this software, related
+// property and proprietary rights in and to this material, related
 // documentation and any modifications thereto. Any use, reproduction,
 // disclosure or distribution of this material and related documentation
 // without an express license agreement from NVIDIA CORPORATION or
@@ -28,7 +28,7 @@ enum class Level
 /// @brief Returns the stream used for informational output (default: std::cout).
 ///
 /// @return The current output stream, or nullptr if output is suppressed.
-OMO_EXPORT
+OMO_EXPORT //
 std::ostream*
 getOutStream();
 
@@ -36,14 +36,14 @@ getOutStream();
 ///
 /// Pass nullptr to suppress all non-error output.
 /// @param stream The stream to use, or nullptr to suppress.
-OMO_EXPORT
+OMO_EXPORT //
 void
 setOutStream(std::ostream* stream);
 
 /// @brief Returns the stream used for error output (default: std::cerr).
 ///
 /// @return The current error stream, or nullptr if error output is suppressed.
-OMO_EXPORT
+OMO_EXPORT //
 std::ostream*
 getErrStream();
 
@@ -51,7 +51,7 @@ getErrStream();
 ///
 /// Pass nullptr to suppress error output.
 /// @param stream The stream to use, or nullptr to suppress.
-OMO_EXPORT
+OMO_EXPORT //
 void
 setErrStream(std::ostream* stream);
 
@@ -59,7 +59,7 @@ setErrStream(std::ostream* stream);
 ///
 /// Messages with a level above this threshold are suppressed.
 /// Level::Error messages are always emitted regardless of this setting.
-OMO_EXPORT
+OMO_EXPORT //
 Level
 getLevel();
 
@@ -68,12 +68,12 @@ getLevel();
 /// Only messages at or below this level will be emitted. Level::Error messages
 /// are always emitted and can only be suppressed by passing nullptr to setErrStream().
 /// @param level The maximum level to emit.
-OMO_EXPORT
+OMO_EXPORT //
 void
 setLevel(Level level);
 
 /// @brief Returns whether ANSI color codes are applied to output (default: true).
-OMO_EXPORT
+OMO_EXPORT //
 bool
 getColorize();
 
@@ -82,7 +82,7 @@ getColorize();
 /// When enabled, error messages are colored red and warnings yellow.
 /// Info and debug messages are never colored.
 /// @param colorize True to enable ANSI coloring, false to disable.
-OMO_EXPORT
+OMO_EXPORT //
 void
 setColorize(bool colorize);
 

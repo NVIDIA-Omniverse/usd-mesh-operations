@@ -24,21 +24,47 @@ This project is currently not accepting contributions.
 
 Each package provides:
 
-- `include/` — C++ headers to add to your compiler's include path.
-- `lib/` or `release/` — prebuilt shared/static libraries to link against.
+- `include/` — C++ headers to add to your compiler's include path (identical across USD versions and platforms).
+- `lib/` — prebuilt shared/static libraries to link against, organized by USD build and platform (see layout below).
 
-## Supported Platforms
+## Vendored versions
 
-| Platform | Architecture |
-| --- | --- |
-| Linux | x86_64 |
-| Linux | aarch64 |
-| Windows | x86_64 |
+These prebuilts were published to the internal packman registry and are pinned here. Only `release` builds are vendored. The exact, fully-qualified packman package identifiers — together with archive sizes and the UTC publish time of each build — are recorded per platform and USD version in [`vendor/VERSIONS.yaml`](vendor/VERSIONS.yaml).
+
+| Package | Packman package | Version | USD builds |
+| --- | --- | --- | --- |
+| `omnimesh_ops_usd` | `omnimesh_ops_usd` | `1.1.0-r4` | 25.05, 25.11 |
+| `mesh_tools` | `mesh_tools_lib` | `1.0.0.1ed0a585` | USD-agnostic (single build) |
+| `shrinkwrap_openvdb` | `shrinkwrap_openvdb` | `13.0.1+mr4.4.d98d25a3.gl` | 25.05, 25.11 |
+| `autouv-core` | `autouv-core` | `1.0.2+main.39.ee30cdcc.gl` | 25.05, 25.11 |
+
+## Library layout
+
+USD-dependent packages carry a separate set of binaries per OpenUSD release, under a `usd25.05` / `usd25.11` subfolder, then by platform:
+
+```
+vendor/<package>/lib/usd25.05/<platform>/...
+vendor/<package>/lib/usd25.11/<platform>/...
+```
+
+`mesh_tools` is USD-agnostic (a single build serves all USD versions), so it omits the USD level:
+
+```
+vendor/mesh_tools/lib/<platform>/...
+```
+
+Supported `<platform>` values:
+
+| Platform | Architecture | Folder |
+| --- | --- | --- |
+| Linux | x86_64 | `manylinux_2_35_x86_64` |
+| Linux | aarch64 | `manylinux_2_35_aarch64` |
+| Windows | x86_64 | `windows-x86_64` |
 
 ## Usage
 
 1. Clone this repository (or add it as a submodule) next to or under your main project.
-2. Point your build system's include and link search paths at the `vendor/<package>/include` and `vendor/<package>/lib` (or `release`) directories for the packages you need.
+2. Point your build system's include and link search paths at `vendor/<package>/include` and the matching `vendor/<package>/lib/usd<version>/<platform>` directory for the USD release you are building against (`mesh_tools` uses `vendor/mesh_tools/lib/<platform>`).
 3. Keep this repository in sync with the Scene Optimizer release you are building against.
 
 ## License

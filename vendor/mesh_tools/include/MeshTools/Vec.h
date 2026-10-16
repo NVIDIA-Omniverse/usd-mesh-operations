@@ -2821,6 +2821,27 @@ CUDA_CALLABLE_DEVICE inline float AtomicAdd(float* var, float val)
 }
 
 /**
+ * @brief Sets a Vec3 value to an Vec3 variable. The operation is atomic if the code is executed on the GPU.
+ * @param var The variable to which the value is set.
+ * @param val The value to set.
+ * @return The value of the variable before the setting.
+ */
+CUDA_CALLABLE_DEVICE inline Vec3 AtomicSet(Vec3* v, Vec3 val)
+{
+    Vec3 old;
+#ifdef __CUDACC__
+    old.x = atomicExch(&v->x, val.x);
+    old.y = atomicExch(&v->y, val.y);
+    old.z = atomicExch(&v->z, val.z);
+    return old;
+#else
+    old = *v;
+    *v = val;
+    return old;
+#endif
+}
+
+/**
  * @brief Adds a Vec3 value to an Vec3 variable. The operation is atomic if the code is executed on the GPU.
  * @param var The variable to which the value is added.
  * @param val The value to add.

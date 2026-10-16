@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -23,7 +23,7 @@ namespace omo
 /// @param mesh The input Mesh
 /// @return A manifold cutting of the input mesh, including all the attachments from the original mesh
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Mesh<R>
 manifold(const Mesh<R>& mesh);
 
@@ -32,7 +32,7 @@ manifold(const Mesh<R>& mesh);
 /// @param transferred_attachments The names of the attributes to transfer to the output Mesh
 /// @return A manifold cutting of the input mesh
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Mesh<R>
 manifold(const Mesh<R>& mesh, const std::vector<std::string>& transferred_attachments);
 

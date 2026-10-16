@@ -13,36 +13,73 @@ include:
   #     extends_tail:
   #       - .omni_nvks_runner-privileged:tags
 
-  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/pulse-trufflehog/pulse-trufflehog_repository@v0.3.1
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/pulse-trufflehog/pulse-trufflehog_repository@v0.15.0
     inputs:
       mr_run_when: always
       extends_tail:
-        - .omni_nvks_runner-privileged:tags
+        - .ipp_lnx_x86_64_cpu_medium
 
-  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.3.1
+  - component: gitlab-master.nvidia.com/omniverse/sectools/gitlab/components/omni-sanitizer/omni-sanitizer_repository@v0.6.4
     inputs:
       enable: true
       mr_run_when: always
       rules_id: ov.repository.external
       # Do not exclude LICENSE — osecpac needs it for license policy (e.g. osecpac_license_missing).
-      exclude_paths: ".gitlab-ci.yml .git/** README.md"
+      exclude_paths: ".gitlab-ci.yml .git/**"
       skip_rules: "osecpac_gitcommitsquash osecpac_requiredgitfile"
       extends_head:
-        - .omni_nvks_micro_runner:tags
+        - .ipp_lnx_x86_64_cpu_micro
 
   - project: 'omniverse/devplat/gitlab/templates/common/github-mirror-control'
     file: 'templates/candidate-pipeline.yml'
     ref: v1_latest
 
-# github-mirror-control candidate-pipeline jobs (mirror-sync, mirror-mark-eligible) require MIRROR_REPO_ID.
-# Set per job so it is not injected into every pipeline job (see templates/candidate-pipeline.yml).
+# Disable the stock candidate-pipeline jobs (no deps to sync for this prebuilts
+# repo); mirror-to-github below replaces them.
 mirror-sync:
-  variables:
-    MIRROR_REPO_ID: "usd-mesh-operations"
+  rules:
+    - when: never
 
 mirror-mark-eligible:
+  rules:
+    - when: never
+
+# Manual on-demand mirror. Click on a main pipeline to flag the current HEAD
+# eligible in github-mirror-control; the scheduled reconcile does the push.
+mirror-to-github:
+  extends:
+    - .mirrorctl-setup
+    - .ipp_lnx_x86_64_cpu_small
+  stage: deploy
+  interruptible: false
   variables:
-    MIRROR_REPO_ID: "usd-mesh-operations"
+    GIT_DEPTH: 1
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_PROTECTED == "true"
+      when: manual
+      allow_failure: false
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: manual
+      allow_failure: false
+  script:
+    - |
+      cd /tmp/_mirrorctl
+      ./repo.sh ci mirrorctl -- mark-eligible \
+        --state-dir state \
+        --repo-id "usd-mesh-operations" \
+        --source-branch main \
+        --source-sha "${CI_COMMIT_SHA}" \
+        --build-status success \
+        --external-sync-status success
+      git add state/
+      git diff --cached --quiet || {
+        git config user.name "svcomnigitlabgithub"
+        git config user.email "svcomnigitlabgithub@nvidia.com"
+        git commit -m "mirror usd-mesh-operations main ${CI_COMMIT_SHA:0:12} to github (manual)"
+        git push "https://oauth2:${GITLAB_AUTH_TOKEN}@${CI_SERVER_HOST}/omniverse/devplat/gitlab/templates/common/github-mirror-control.git" HEAD:main
+      }
 
 variables:
   GIT_LFS: "true"

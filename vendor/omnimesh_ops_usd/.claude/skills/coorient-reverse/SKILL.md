@@ -1,13 +1,18 @@
-<!-- SPDX-FileCopyrightText: Copyright (c) 2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
-<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
-
 ---
 name: coorient-reverse
 description: Coorient mesh faces for consistent winding, or reverse face winding order with optional normal flipping.
 allowed-tools: Read, Glob, Grep
+license: LicenseRef-NvidiaProprietary
+metadata:
+  version: "1.0.0"
 ---
 
+<!-- SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved. -->
+<!-- SPDX-License-Identifier: LicenseRef-NvidiaProprietary -->
+
 # Coorient and Reverse Face Winding
+
+Both are free functions operating on `MeshData`.
 
 ## Coorient — Make Face Windings Consistent
 
@@ -15,26 +20,24 @@ allowed-tools: Read, Glob, Grep
 
 ```cpp
 #include <OmniMeshOps/Coorient.h>
-#include <OmniMeshOps/usd/MeshData.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ### Usage
 
 ```cpp
-omo::usd::HostMeshData meshData(usdGeomMesh);
-omo::HostMeshData result = omo::coorient(meshData, omo::CoorientOptions::FlipNormalsOfReversedFaces);
-```
+using namespace omo;
 
-### With Attribute Transfer
-
-```cpp
-omo::HostMeshData result = omo::coorient(meshData, {"primvars:st"}, omo::CoorientOptions::FlipNormalsOfReversedFaces);
+HostMeshData meshData = importMeshData(usdGeomMesh);
+HostMeshData result = coorient(meshData, CoorientOptions::FlipNormalsOfReversedFaces);
+// transferring only named attributes/subsets:
+HostMeshData result = coorient(meshData, transferredAttachments, CoorientOptions::FlipNormalsOfReversedFaces);
 ```
 
 ### Options
 
 - `CoorientOptions::None` — only fix winding
-- `CoorientOptions::FlipNormalsOfReversedFaces` — also flip normals for reversed faces (default). PerVertex Normal attributes are promoted to PerCorner and flipped where faces are reversed.
+- `CoorientOptions::FlipNormalsOfReversedFaces` (default) — also flip normals for reversed faces. `PerVertex` Normal attributes are promoted to `PerCorner` and flipped where faces are reversed.
 
 ---
 
@@ -44,22 +47,24 @@ omo::HostMeshData result = omo::coorient(meshData, {"primvars:st"}, omo::Coorien
 
 ```cpp
 #include <OmniMeshOps/Reverse.h>
-#include <OmniMeshOps/usd/MeshData.h>
+#include <OmniMeshOps/UsdIO.h>
 ```
 
 ### Usage
 
 ```cpp
-omo::usd::HostMeshData meshData(usdGeomMesh);
-omo::HostMeshData result = omo::reverse(meshData, omo::ReverseOptions::FlipNormals);
+HostMeshData meshData = importMeshData(usdGeomMesh);
+HostMeshData result = reverse(meshData, ReverseOptions::FlipNormals);
+// or: reverse(meshData, transferredAttachments, ReverseOptions::FlipNormals);
 ```
 
 ### Options
 
-- `ReverseOptions::None` — reverse faces only
+- `ReverseOptions::None` (default) — reverse faces only
 - `ReverseOptions::FlipNormals` — also flip normal directions
 
 ## Key Notes
 
-- Both operate on `MeshData`, not `Mesh`
-- Both accept optional `transferred_attachments` vector
+- Both operate on `MeshData`; import with `importMeshData` and write back with `exportUsdGeomMesh`.
+- Both have overloads with and without `transferred_attachments` (the no-list form keeps everything).
+- GPU: wrap the input in `DeviceMeshData` and convert the result back to `HostMeshData`.

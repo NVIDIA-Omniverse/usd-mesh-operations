@@ -1,0 +1,117 @@
+# Exact provenance of the prebuilt libraries vendored in this repo.
+# Each entry is the full packman package identifier (as published to the
+# internal packman cloudfront remote), its archive size, and the time the
+# package was created/published (UTC).
+# Generated: 2026-06-26 06:53:38 UTC
+
+omnimesh_ops_usd:
+  packman_package: omnimesh_ops_usd
+  version: 1.1.0-r4
+  config: release
+  builds:
+    usd25.05:
+      manylinux_2_35_x86_64:
+        version: "1.1.0-r4+manylinux_2_35_x86_64.release.gcc11-cuda12.4-usd25.05-py3.12"
+        size_bytes: 106248650
+        created: "2026-06-24 05:49:32+00:00"
+      manylinux_2_35_aarch64:
+        version: "1.1.0-r4+manylinux_2_35_aarch64.release.gcc11-cuda12.4-usd25.05-py3.12"
+        size_bytes: 106149601
+        created: "2026-06-24 05:49:36+00:00"
+      windows-x86_64:
+        version: "1.1.0-r4+windows-x86_64.release.cuda12.4-usd25.05-py3.12"
+        size_bytes: 118370913
+        created: "2026-06-24 06:53:37+00:00"
+    usd25.11:
+      manylinux_2_35_x86_64:
+        version: "1.1.0-r4+manylinux_2_35_x86_64.release.gcc11-cuda12.4-usd25.11-py3.12"
+        size_bytes: 106548021
+        created: "2026-06-24 05:49:40+00:00"
+      manylinux_2_35_aarch64:
+        version: "1.1.0-r4+manylinux_2_35_aarch64.release.gcc11-cuda12.4-usd25.11-py3.12"
+        size_bytes: 106427601
+        created: "2026-06-24 05:49:29+00:00"
+      windows-x86_64:
+        version: "1.1.0-r4+windows-x86_64.release.cuda12.4-usd25.11-py3.12"
+        size_bytes: 118450627
+        created: "2026-06-24 06:53:43+00:00"
+mesh_tools:
+  packman_package: mesh_tools_lib
+  version: 1.0.0.1ed0a585
+  config: release
+  usd_agnostic: true
+  builds:
+    manylinux_2_35_x86_64:
+      version: "1.0.0.1ed0a585.manylinux_2_35_x86_64.release"
+      size_bytes: 16994848
+      created: "2026-06-26 04:37:31+00:00"
+    manylinux_2_35_aarch64:
+      version: "1.0.0.1ed0a585.manylinux_2_35_aarch64.release"
+      size_bytes: 16663483
+      created: "2026-06-26 04:37:34+00:00"
+    windows-x86_64:
+      version: "1.0.0.1ed0a585.windows-x86_64.release"
+      size_bytes: 9341388
+      created: "2026-06-26 04:37:37+00:00"
+shrinkwrap_openvdb:
+  packman_package: shrinkwrap_openvdb
+  version: 13.0.1+mr4.4.d98d25a3.gl
+  config: release
+  builds:
+    usd25.05:
+      manylinux_2_35_x86_64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.manylinux_2_35_x86_64.release.usd25-05"
+        size_bytes: 3439845
+        created: "2026-06-25 04:16:43+00:00"
+      manylinux_2_35_aarch64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.manylinux_2_35_aarch64.release.usd25-05"
+        size_bytes: 3577212
+        created: "2026-06-25 04:16:40+00:00"
+      windows-x86_64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.windows-x86_64.release.usd25-05"
+        size_bytes: 6820623
+        created: "2026-06-25 04:16:46+00:00"
+    usd25.11:
+      manylinux_2_35_x86_64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.manylinux_2_35_x86_64.release.usd25-11"
+        size_bytes: 3416779
+        created: "2026-06-25 04:16:44+00:00"
+      manylinux_2_35_aarch64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.manylinux_2_35_aarch64.release.usd25-11"
+        size_bytes: 3528761
+        created: "2026-06-25 04:16:41+00:00"
+      windows-x86_64:
+        version: "13.0.1+mr4.4.d98d25a3.gl.windows-x86_64.release.usd25-11"
+        size_bytes: 7186010
+        created: "2026-06-25 04:16:47+00:00"
+autouv-core:
+  packman_package: autouv-core
+  version: 1.0.2+main.39.ee30cdcc.gl
+  config: release
+  builds:
+    usd25.05:
+      manylinux_2_35_x86_64:
+        version: "1.0.2+main.39.ee30cdcc.gl.manylinux_2_35_x86_64.usd25.05"
+        size_bytes: 1579097
+        created: "2026-06-26 01:41:55+00:00"
+      manylinux_2_35_aarch64:
+        version: "1.0.2+main.39.ee30cdcc.gl.manylinux_2_35_aarch64.usd25.05"
+        size_bytes: 1501062
+        created: "2026-06-26 01:41:57+00:00"
+      windows-x86_64:
+        version: "1.0.2+main.39.ee30cdcc.gl.windows-x86_64.usd25.05"
+        size_bytes: 1585583
+        created: "2026-06-26 01:41:52+00:00"
+    usd25.11:
+      manylinux_2_35_x86_64:
+        version: "1.0.2+main.39.ee30cdcc.gl.manylinux_2_35_x86_64.usd25.11"
+        size_bytes: 1583309
+        created: "2026-06-26 01:43:39+00:00"
+      manylinux_2_35_aarch64:
+        version: "1.0.2+main.39.ee30cdcc.gl.manylinux_2_35_aarch64.usd25.11"
+        size_bytes: 1505733
+        created: "2026-06-26 01:43:41+00:00"
+      windows-x86_64:
+        version: "1.0.2+main.39.ee30cdcc.gl.windows-x86_64.usd25.11"
+        size_bytes: 1593815
+        created: "2026-06-26 01:43:37+00:00"

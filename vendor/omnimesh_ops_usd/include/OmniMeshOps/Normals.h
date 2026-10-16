@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2023-2025 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2023-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -16,8 +16,10 @@ namespace omo
 
 template <Residency R>
 class Attribute;
+
 template <Residency R>
 class Mesh;
+
 template <Residency R>
 class MeshData;
 
@@ -34,7 +36,7 @@ enum class WeightMode
 /// @param weight_mode The weighting method to use, either area- or angle-weighting.
 /// @return An Attribute holding the corner normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 cornerNormals(
     const Mesh<R>& mesh,
@@ -45,12 +47,13 @@ cornerNormals(
 ///     normal attribute. Finite nonzero existing entries are normalized,
 ///     others recomputed.
 /// @param mesh The Mesh to compute normals for
+/// @param existing The existing normal attribute to seed the computation from
 /// @param sharpness_angle The absolute value of the dihedral angle at an edge above which the edge is considered sharp.
 ///     The dihedral angle is measured in the range ]-180, 180] degrees with 0 being flat.
 /// @param weight_mode The weighting method to use, either area- or angle-weighting.
 /// @return An Attribute holding the corner normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 cornerNormals(
     const Mesh<R>& mesh,
@@ -62,7 +65,7 @@ cornerNormals(
 /// @param mesh The Mesh to compute normals for
 /// @return An Attribute holding the face normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 faceNormals(
     const Mesh<R>& mesh);
@@ -71,9 +74,10 @@ faceNormals(
 ///     normal attribute. Finite nonzero existing entries are normalized,
 ///     others recomputed.
 /// @param mesh The Mesh to compute normals for
+/// @param existing The existing normal attribute to seed the computation from
 /// @return An Attribute holding the face normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 faceNormals(
     const Mesh<R>& mesh,
@@ -84,21 +88,21 @@ faceNormals(
 /// @param weight_mode The weighting method to use, either area- or angle-weighting.
 /// @return An Attribute holding the vertex normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 vertexNormals(
     const Mesh<R>& mesh,
     WeightMode weight_mode = WeightMode::Angle);
 
 /// @brief Computes vertex normals for the given Mesh based on an existing
-///     normal attribute. Finite nonzero existing entries are normalized.
 ///     normal attribute. Finite nonzero existing entries are normalized,
 ///     others recomputed.
 /// @param mesh The Mesh to compute normals for
+/// @param existing The existing normal attribute to seed the computation from
 /// @param weight_mode The weighting method to use, either area- or angle-weighting.
 /// @return An Attribute holding the vertex normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 vertexNormals(
     const Mesh<R>& mesh,
@@ -114,7 +118,7 @@ vertexNormals(
 /// @param weight_mode The weighting method to use, either area- or angle-weighting.
 /// @return An Attribute holding the corner normals
 template <Residency R>
-OMO_EXPORT
+OMO_EXPORT //
 Attribute<R>
 normals(
     const Mesh<R>& mesh,
@@ -122,10 +126,10 @@ normals(
     WeightMode weight_mode = WeightMode::Angle);
 
 
-enum class CheckNormalsOptions: unsigned int
+enum class CheckNormalsOptions : unsigned int
 {
-    Strict = 0,             // Only accept unit-length vectors (within tolerance)
-    AllowZeroLength = 1     // Ignore (precisely) zero vectors
+    Strict = 0,         // Only accept unit-length vectors (within tolerance)
+    AllowZeroLength = 1 // Ignore (precisely) zero vectors
 };
 
 constexpr CheckNormalsOptions
@@ -151,17 +155,16 @@ hasFlag(const CheckNormalsOptions& self, const CheckNormalsOptions& predicate)
 /// @param tolerance The tolerance to use when comparing lengths to 1.
 ///     Vectors with length within tolerance to 1 are accepted.
 /// @param options Options for tweaking what counts as valid:
-/// @return ValidationResult will contain true if the normals attribute is valid, false otherwise
+/// @return Validation will contain true if the normals attribute is valid, false otherwise
 template <Residency R>
-OMO_EXPORT
-ValidationResult
+OMO_EXPORT //
+Validation
 checkNormalsUnitLength(
     const Attribute<R>& attribute,
     double tolerance = 1e-4,
-    CheckNormalsOptions options = CheckNormalsOptions::Strict
-);
+    CheckNormalsOptions options = CheckNormalsOptions::Strict);
 
-enum class Orientation: int
+enum class Orientation : int
 {
     RightHanded,
     LeftHanded
@@ -171,14 +174,14 @@ enum class Orientation: int
 /// @param mesh_data The MeshData to use
 /// @param attribute The normals attribute
 /// @param orientation The orientation that was used for the normal computation
-/// @return ValidationResult will contain true if normals and windings are consistent with the provided orientation, false otherwise
+/// @return Validation will contain true if normals and windings are consistent with the provided orientation,
+/// false otherwise
 template <Residency R>
-OMO_EXPORT
-ValidationResult
+OMO_EXPORT //
+Validation
 checkNormalsConsistentWithWinding(
     const MeshData<R>& mesh_data,
     const Attribute<R>& attribute,
-    Orientation orientation = Orientation::RightHanded
-);
+    Orientation orientation = Orientation::RightHanded);
 
 } // namespace omo

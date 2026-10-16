@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Copyright (c) 2020-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-FileCopyrightText: Copyright (c) 2020-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 // SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 //
 // NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
@@ -34,8 +34,9 @@ public:
     /// @param guide_attribute_name The attribute name to use as guide for decimation, should be PerVertex<Color> or
     /// PerCorner<Normal> attribute
     OMO_EXPORT
-    Decimate(const Mesh<R>& mesh,
-              std::string_view guide_attribute_name = {});
+    Decimate( //
+        const Mesh<R>& mesh,
+        std::string_view guide_attribute_name = {});
 
     /// @brief Constructs a Decimate to decimate the given Mesh.
     /// The Mesh can be decimated multiple times, with different decimation settings.
@@ -45,12 +46,12 @@ public:
     /// @param transferred_attachments The list of attribute and subset names to bring over from the source mesh to
     /// the decimated mesh
     OMO_EXPORT
-    Decimate(const Mesh<R>& mesh,
-              std::string_view guide_attribute_name,
-              const std::vector<std::string>& transferred_attachments);
+    Decimate( //
+        const Mesh<R>& mesh,
+        std::string_view guide_attribute_name,
+        const std::vector<std::string>& transferred_attachments);
 
-    OMO_EXPORT
-    ~Decimate();
+    OMO_EXPORT ~Decimate();
 
     /// @brief Executes a decimation operation with the provided settings.
     /// Each invocation results in decimation of the source mesh, not of the previously decimated mesh.
@@ -60,20 +61,23 @@ public:
     /// @param pin_boundaries If true, maintains the arrangement of vertices on surface boundaries intact
     /// @param can_cut_and_glue If true, allows decimator to cut and glue mesh
     /// @return The decimated Mesh
-    OMO_EXPORT
+    OMO_EXPORT //
     Mesh<R>
-    operator()(size_t target_vertex_count,
-               double max_mean_error,
-               bool run_parallel = true,
-               bool pin_boundaries = false,
-               bool can_cut_and_glue = false);
+    operator()(
+        size_t target_vertex_count,
+        double max_mean_error,
+        bool run_parallel = true,
+        bool pin_boundaries = false,
+        bool can_cut_and_glue = false);
 
     /// @brief Returns the actual mean error reached by the last decimation.
-    [[nodiscard]] OMO_EXPORT
+    [[nodiscard]]
+    OMO_EXPORT //
     double
     meanError() const;
 
     class Impl;
+
 private:
     std::unique_ptr<Impl> m_impl;
 };
